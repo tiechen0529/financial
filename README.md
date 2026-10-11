@@ -45,6 +45,9 @@ https://f.fenxi365.com/
 #### 本地开发
 环境准备、数据库导入和启动方式见 [DEVELOPMENT.md](DEVELOPMENT.md)。
 
+#### TypeScript 全栈重建版（进行中）
+重建版代码和运行说明见 [rebuild/README.md](rebuild/README.md)。目前仅为开发骨架，不可用于生产；重建版不含内置认证或短信模块。
+
 #### 商业版演示地址
 https://f3.fenxi365.com/
 

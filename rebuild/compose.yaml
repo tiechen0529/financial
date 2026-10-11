@@ -1,0 +1,29 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: financial_dev
+      MYSQL_USER: financial
+      MYSQL_PASSWORD: financial-dev-only
+      MYSQL_ROOT_PASSWORD: root-dev-only
+    ports:
+      - "127.0.0.1:3307:3306"
+    volumes:
+      - financial-mysql:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "127.0.0.1",
+          "-uroot",
+          "-proot-dev-only",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  financial-mysql:
