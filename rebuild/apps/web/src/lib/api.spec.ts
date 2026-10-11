@@ -1,5 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { createAccountSet, getHealth, listAccountSets } from "./api";
+import {
+  checkDatabaseReadiness,
+  createAccountSet,
+  getHealth,
+  listAccountSets,
+} from "./api";
 
 describe("API client", () => {
   it("reads the versioned API health endpoint", async () => {
@@ -12,6 +17,19 @@ describe("API client", () => {
 
     await expect(getHealth(fetcher)).resolves.toEqual({ status: "ok" });
     expect(fetcher).toHaveBeenCalledWith("/api/v1/health", {
+      headers: { Accept: "application/json" },
+    });
+  });
+
+  it("checks database readiness separately from API liveness", async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(
+        new Response(JSON.stringify({ status: "ready" }), { status: 200 }),
+      );
+
+    await expect(checkDatabaseReadiness(fetcher)).resolves.toBeUndefined();
+    expect(fetcher).toHaveBeenCalledWith("/api/v1/health/ready", {
       headers: { Accept: "application/json" },
     });
   });

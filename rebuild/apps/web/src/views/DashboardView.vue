@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import {
+  checkDatabaseReadiness,
   createAccountSet,
   getHealth,
   listAccountSets,
@@ -8,6 +9,7 @@ import {
 } from "../lib/api";
 
 const apiAvailable = ref<boolean | null>(null);
+const databaseAvailable = ref<boolean | null>(null);
 const accountSets = ref<AccountSet[]>([]);
 const selectedAccountSetId = ref<number | null>(null);
 const accountSetsError = ref("");
@@ -56,9 +58,17 @@ onMounted(async () => {
   try {
     await getHealth();
     apiAvailable.value = true;
+    await checkDatabaseReadiness();
+    databaseAvailable.value = true;
     await loadAccountSets();
-  } catch {
-    apiAvailable.value = false;
+  } catch (error) {
+    if (apiAvailable.value) {
+      databaseAvailable.value = false;
+      accountSetsError.value =
+        error instanceof Error ? error.message : "本地数据库暂不可用";
+    } else {
+      apiAvailable.value = false;
+    }
   }
 });
 </script>
@@ -88,11 +98,27 @@ onMounted(async () => {
       <div>
         <h2>服务状态</h2>
         <p v-if="apiAvailable === null">正在检查本地 API…</p>
-        <p v-else-if="apiAvailable">本地 API 已连接，可以开始迁移账务模块。</p>
+        <p v-else-if="apiAvailable && databaseAvailable === null">
+          API 已连接，正在检查数据库…
+        </p>
+        <p v-else-if="apiAvailable && !databaseAvailable">
+          API 已连接，但数据库尚未就绪。
+        </p>
+        <p v-else-if="apiAvailable">
+          API 和数据库已就绪，可以开始迁移账务模块。
+        </p>
         <p v-else>API 尚未启动。运行 <code>npm run dev</code> 后刷新页面。</p>
       </div>
       <span class="status-label" :class="{ online: apiAvailable }">
-        {{ apiAvailable ? "在线" : apiAvailable === null ? "检查中" : "离线" }}
+        {{
+          !apiAvailable
+            ? apiAvailable === null
+              ? "检查中"
+              : "离线"
+            : databaseAvailable
+              ? "就绪"
+              : "数据库未就绪"
+        }}
       </span>
     </section>
 
@@ -170,7 +196,7 @@ onMounted(async () => {
         </label>
         <button
           class="create-button"
-          :disabled="saving || !apiAvailable"
+          :disabled="saving || !databaseAvailable"
           type="submit"
         >
           {{ saving ? "正在创建…" : "创建账套" }}

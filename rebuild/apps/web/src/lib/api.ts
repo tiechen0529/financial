@@ -35,6 +35,17 @@ export async function getHealth(
   return (await response.json()) as HealthStatus;
 }
 
+export async function checkDatabaseReadiness(
+  fetcher: typeof fetch = fetch,
+): Promise<void> {
+  const response = await fetcher("/api/v1/health/ready", {
+    headers: { Accept: "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`Database readiness check failed (${response.status})`);
+  }
+}
+
 export async function listAccountSets(
   fetcher: typeof fetch = fetch,
 ): Promise<AccountSet[]> {
