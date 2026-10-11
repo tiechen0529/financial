@@ -32,6 +32,7 @@ export class DatabaseService implements OnApplicationShutdown {
       connectionLimit: 10,
       charset: "utf8mb4",
       decimalNumbers: false,
+      dateStrings: ["DATE"],
     });
 
     this.pool = pool;

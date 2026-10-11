@@ -232,7 +232,8 @@ h1 {
   color: #6c788b;
   font-size: 11px;
 }
-.create-form input {
+.create-form input,
+.create-form select {
   width: 100%;
   height: 38px;
   padding: 0 10px;
@@ -317,6 +318,512 @@ footer {
   text-align: center;
 }
 
+.module-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 20px 0 14px;
+  padding: 5px;
+  border: 1px solid #e0e7f1;
+  border-radius: 13px;
+  background: #eaf0f8;
+}
+.module-nav button {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 9px;
+  color: #69788d;
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.module-nav button.active {
+  color: #245fc5;
+  background: #fff;
+  box-shadow: 0 2px 8px #15284412;
+}
+.workspace-panel {
+  min-width: 0;
+  margin-top: 14px;
+  padding: 25px;
+  border: 1px solid #dfe7f1;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 32px #1a32520a;
+}
+.panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 20px;
+}
+.panel-heading .eyebrow {
+  margin-bottom: 7px;
+}
+.panel-heading h2 {
+  margin: 0;
+  font-size: 21px;
+}
+.panel-description {
+  margin: 8px 0 0;
+  color: #7a879b;
+  font-size: 12px;
+  line-height: 1.7;
+}
+.panel-actions,
+.period-filter,
+.dialog-actions,
+.voucher-card-actions,
+.voucher-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.primary-button,
+.secondary-button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.primary-button {
+  color: #fff;
+  background: #2869dc;
+}
+.secondary-button {
+  border-color: #dfe6ef;
+  color: #52627a;
+  background: #fff;
+}
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.text-button {
+  padding: 4px 6px;
+  border: 0;
+  color: #2869dc;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.danger-button {
+  color: #bb4b47;
+}
+.small-button {
+  min-height: 30px;
+  padding: 0 12px;
+}
+.notice {
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: #f4f7fc;
+  line-height: 1.6;
+}
+.error-notice {
+  color: #a63c37;
+  background: #fff0ee;
+}
+.success-notice {
+  color: #18764f;
+  background: #eaf8f0;
+}
+.warning-notice {
+  margin: 0 0 14px;
+  color: #8b5b12;
+  background: #fff8e9;
+  font-size: 12px;
+}
+.subject-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 1px solid #e6ebf2;
+  border-radius: 11px;
+  background: #f9fbfe;
+}
+.subject-form label,
+.dialog-card label,
+.voucher-meta label {
+  display: grid;
+  gap: 6px;
+  color: #6c788b;
+  font-size: 11px;
+}
+.subject-form input,
+.subject-form select,
+.dialog-card input,
+.voucher-meta input,
+.voucher-line input,
+.voucher-line select,
+.period-filter input,
+.table-toolbar input {
+  min-width: 0;
+  height: 36px;
+  padding: 0 9px;
+  border: 1px solid #dfe6ef;
+  border-radius: 7px;
+  color: #1a2433;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+}
+.table-toolbar,
+.report-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0 10px;
+  color: #8793a5;
+  font-size: 11px;
+}
+.table-toolbar input {
+  width: min(260px, 50%);
+}
+.table-scroll {
+  max-width: 100%;
+  overflow: auto;
+  border: 1px solid #e7ecf3;
+  border-radius: 10px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #405069;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.data-table th,
+.data-table td {
+  padding: 10px 11px;
+  border-bottom: 1px solid #edf0f5;
+  text-align: left;
+}
+.data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  color: #738198;
+  background: #f7f9fc;
+  font-weight: 600;
+}
+.data-table tbody tr:hover {
+  background: #fafcff;
+}
+.data-table tfoot th {
+  position: static;
+  color: #26354b;
+  background: #f3f7fd;
+}
+.subjects-table {
+  min-width: 900px;
+}
+.trial-balance-table {
+  min-width: 980px;
+}
+.code-cell {
+  color: #315d9d;
+  font-variant-numeric: tabular-nums;
+}
+.money-cell {
+  font-variant-numeric: tabular-nums;
+  text-align: right !important;
+}
+.summary-row td {
+  color: #24344b;
+  font-weight: 650;
+  background: #fafcff;
+}
+.status-pill {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  color: #168052;
+  background: #e9f7f0;
+  font-size: 10px;
+}
+.status-pill.muted {
+  color: #77849a;
+  background: #f1f3f6;
+}
+.status-pill.warning {
+  color: #9a661b;
+  background: #fff4d9;
+}
+.table-empty {
+  padding: 24px !important;
+  color: #97a1b1;
+  text-align: center !important;
+}
+.dialog-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #14233a66;
+}
+.dialog-card {
+  display: grid;
+  width: min(420px, 100%);
+  gap: 12px;
+  padding: 22px;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 24px 80px #0b172833;
+}
+.dialog-card h3,
+.dialog-card p {
+  margin: 0;
+}
+.dialog-card > p {
+  color: #77849a;
+  font-size: 12px;
+}
+.dialog-hint {
+  line-height: 1.6;
+}
+.dialog-actions {
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.period-filter label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #7b8799;
+  font-size: 11px;
+}
+.period-filter input {
+  width: 78px;
+}
+.voucher-editor {
+  margin: 18px 0 25px;
+  padding: 18px;
+  border: 1px solid #e5eaf2;
+  border-radius: 12px;
+  background: #fbfcfe;
+}
+.voucher-editor-heading,
+.voucher-card-head,
+.compact-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.voucher-editor-heading h3,
+.compact-heading h3 {
+  margin: 0;
+  font-size: 14px;
+}
+.voucher-meta {
+  display: flex;
+  gap: 12px;
+  margin: 14px 0;
+}
+.voucher-meta input {
+  min-width: 170px;
+}
+.voucher-line {
+  display: grid;
+  grid-template-columns:
+    minmax(120px, 1fr) minmax(200px, 1.4fr) minmax(110px, 0.7fr)
+    minmax(110px, 0.7fr) 26px;
+  gap: 7px;
+  margin-top: 7px;
+}
+.voucher-line-head {
+  color: #7e8ba0;
+  font-size: 10px;
+}
+.voucher-line-head span {
+  padding: 0 8px;
+}
+.icon-button {
+  border: 0;
+  color: #a2adbb;
+  background: transparent;
+  font-size: 20px;
+  cursor: pointer;
+}
+.icon-button:disabled {
+  opacity: 0.3;
+}
+.voucher-form-actions {
+  justify-content: space-between;
+  margin-top: 14px;
+}
+.form-hint,
+.muted-text {
+  color: #909bac;
+  font-size: 10px;
+}
+.compact-heading {
+  margin: 20px 0 10px;
+}
+.voucher-list {
+  display: grid;
+  gap: 10px;
+}
+.voucher-card {
+  padding: 14px;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+}
+.voucher-card-head {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  color: #53627a;
+  font-size: 11px;
+}
+.voucher-card-head strong {
+  color: #24344b;
+}
+.voucher-total {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+.voucher-card-lines {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 4px;
+  color: #718096;
+  font-size: 10px;
+}
+.voucher-card-lines > div {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr 1fr;
+  gap: 8px;
+}
+.voucher-card-actions {
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.ledger-detail-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 14px 0;
+  color: #718096;
+  font-size: 11px;
+}
+.ledger-detail-heading strong {
+  color: #2c3e56;
+  font-size: 13px;
+}
+.ledger-detail-table {
+  min-width: 900px;
+}
+.income-statement-table {
+  min-width: 560px;
+}
+.statement-bold td {
+  color: #273850;
+  font-weight: 700;
+  background: #fafcff;
+}
+.balance-check {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 13px 15px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.balance-check.balanced {
+  color: #18764f;
+  background: #eaf8f0;
+}
+.balance-check.unbalanced {
+  color: #a63c37;
+  background: #fff0ee;
+}
+.balance-check strong {
+  font-variant-numeric: tabular-nums;
+}
+.balance-check small {
+  margin-left: auto;
+  opacity: 0.75;
+}
+.statement-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.statement-section {
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid #e7ecf3;
+  border-radius: 10px;
+}
+.statement-section h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+  color: #2e4058;
+  font-size: 13px;
+}
+.statement-section h3 span,
+.statement-line strong {
+  font-variant-numeric: tabular-nums;
+}
+.statement-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f2f6;
+  color: #6d7a8e;
+  font-size: 10px;
+}
+.statement-line strong {
+  flex: 0 0 auto;
+  color: #42516a;
+}
+.profit-line {
+  color: #2d5fa6;
+}
+.statement-footnote {
+  margin: 14px 0 0;
+  color: #909bac;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.period-current {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px;
+  border-radius: 10px;
+  color: #6f7f96;
+  background: #f6f9fd;
+  font-size: 12px;
+}
+.period-current strong {
+  color: #273850;
+  font-size: 16px;
+}
+.period-actions {
+  min-width: 110px;
+}
+
 @media (max-width: 720px) {
   .shell {
     padding: 0 18px 32px;
@@ -344,5 +851,45 @@ footer {
   }
   .module-card p {
     min-height: 0;
+  }
+  .workspace-panel {
+    padding: 16px;
+  }
+  .panel-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .panel-actions,
+  .period-filter {
+    flex-wrap: wrap;
+  }
+  .subject-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .voucher-lines {
+    overflow-x: auto;
+  }
+  .voucher-line {
+    min-width: 760px;
+  }
+  .voucher-form-actions {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .voucher-meta {
+    flex-wrap: wrap;
+  }
+  .voucher-card-lines > div {
+    grid-template-columns: 1fr 1fr;
+  }
+  .statement-columns {
+    grid-template-columns: 1fr;
+  }
+  .balance-check {
+    flex-wrap: wrap;
+  }
+  .balance-check small {
+    flex-basis: 100%;
+    margin-left: 0;
   }
 }

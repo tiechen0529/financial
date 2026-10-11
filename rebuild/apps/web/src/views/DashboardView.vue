@@ -7,6 +7,13 @@ import {
   listAccountSets,
   type AccountSet,
 } from "../lib/api";
+import SubjectsView from "./SubjectsView.vue";
+import VouchersView from "./VouchersView.vue";
+import TrialBalanceView from "./TrialBalanceView.vue";
+import PeriodsView from "./PeriodsView.vue";
+import LedgerView from "./LedgerView.vue";
+import IncomeStatementView from "./IncomeStatementView.vue";
+import BalanceSheetView from "./BalanceSheetView.vue";
 
 const apiAvailable = ref<boolean | null>(null);
 const databaseAvailable = ref<boolean | null>(null);
@@ -14,6 +21,16 @@ const accountSets = ref<AccountSet[]>([]);
 const selectedAccountSetId = ref<number | null>(null);
 const accountSetsError = ref("");
 const saving = ref(false);
+const activeModule = ref("subjects");
+const modules = [
+  { id: "subjects", label: "会计科目" },
+  { id: "vouchers", label: "记账凭证" },
+  { id: "ledger", label: "总账 / 明细账" },
+  { id: "trial-balance", label: "试算平衡表" },
+  { id: "income-statement", label: "利润表" },
+  { id: "balance-sheet", label: "资产负债汇总" },
+  { id: "periods", label: "会计期间" },
+];
 
 const today = new Date();
 const monthStart = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-01`;
@@ -80,14 +97,14 @@ onMounted(async () => {
         <span class="brand-mark">财</span>
         <span>纷析云<span class="brand-light"> · 财务</span></span>
       </a>
-      <span class="environment">重建版 · 本地工作区</span>
+      <span class="environment">重建版 · 局域网预览</span>
     </header>
 
     <section class="welcome">
       <p class="eyebrow">FINANCIAL WORKSPACE</p>
       <h1>让每一笔账，都有清晰来处。</h1>
       <p class="intro">
-        新账务核心正在搭建。先建立准确、可核验的账务基础，再逐步恢复凭证、账簿与报表。
+        科目、凭证、总账、试算平衡与利润表已接入；资产负债汇总仍待会计复核，现金流和完整结账继续迁移中。
       </p>
     </section>
 
@@ -105,7 +122,7 @@ onMounted(async () => {
           API 已连接，但数据库尚未就绪。
         </p>
         <p v-else-if="apiAvailable">
-          API 和数据库已就绪，可以开始迁移账务模块。
+          API 和数据库已就绪，可以使用已迁移的账务核心模块。
         </p>
         <p v-else>API 尚未启动。运行 <code>npm run dev</code> 后刷新页面。</p>
       </div>
@@ -191,8 +208,11 @@ onMounted(async () => {
           <input v-model="form.currentPeriod" type="date" required />
         </label>
         <label class="standard-field">
-          <span>会计制度标识</span>
-          <input v-model="form.accountingStandard" maxlength="40" required />
+          <span>会计制度</span>
+          <select v-model="form.accountingStandard" required>
+            <option value="enterprise">企业会计准则</option>
+            <option value="small_enterprise">小企业会计准则</option>
+          </select>
         </label>
         <button
           class="create-button"
@@ -204,29 +224,56 @@ onMounted(async () => {
       </form>
     </section>
 
-    <section class="module-grid" aria-label="迁移模块">
-      <article class="module-card active">
-        <span class="module-number">01</span>
-        <h2>账务核心</h2>
-        <p>账套、科目、会计期间、凭证与分录。金额边界使用十进制定点数。</p>
-        <span class="tag">基础建设中</span>
-      </article>
-      <article class="module-card">
-        <span class="module-number">02</span>
-        <h2>账簿与报表</h2>
-        <p>以账务核心为唯一来源，建立可追溯、可对账的汇总与查询。</p>
-        <span class="tag muted">待迁移</span>
-      </article>
-      <article class="module-card">
-        <span class="module-number">03</span>
-        <h2>期末结账</h2>
-        <p>期间锁定、结转和反结账必须有明确事务边界及回归校验。</p>
-        <span class="tag muted">待迁移</span>
-      </article>
-    </section>
+    <nav v-if="selectedAccountSetId" class="module-nav" aria-label="账务模块">
+      <button
+        v-for="module in modules"
+        :key="module.id"
+        type="button"
+        :class="{ active: activeModule === module.id }"
+        @click="activeModule = module.id"
+      >
+        {{ module.label }}
+      </button>
+    </nav>
+
+    <SubjectsView
+      v-if="selectedAccountSetId && activeModule === 'subjects'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <VouchersView
+      v-else-if="selectedAccountSetId && activeModule === 'vouchers'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <LedgerView
+      v-else-if="selectedAccountSetId && activeModule === 'ledger'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <TrialBalanceView
+      v-else-if="selectedAccountSetId && activeModule === 'trial-balance'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <IncomeStatementView
+      v-else-if="selectedAccountSetId && activeModule === 'income-statement'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <BalanceSheetView
+      v-else-if="selectedAccountSetId && activeModule === 'balance-sheet'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
+    <PeriodsView
+      v-else-if="selectedAccountSetId && activeModule === 'periods'"
+      :key="selectedAccountSetId"
+      :account-set-id="selectedAccountSetId"
+    />
 
     <footer>
-      本地工作区默认只监听回环地址；本重建版不包含短信发送和内置身份认证。
+      本重建版不包含短信与内置身份认证。当前服务监听局域网网卡，请勿暴露到公网。
     </footer>
   </main>
 </template>

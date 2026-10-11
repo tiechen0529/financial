@@ -31,6 +31,7 @@ async function migrate(): Promise<void> {
     connectionLimit: 10,
     charset: "utf8mb4",
     decimalNumbers: false,
+    dateStrings: ["DATE"],
   });
 
   const db = new Kysely<FinancialDatabase>({

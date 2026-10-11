@@ -3,12 +3,16 @@ import type { Selectable } from "kysely";
 import { DatabaseService } from "../database/database.service.js";
 import type { AccountSetsTable } from "../database/schema.js";
 import type { CreateAccountSet } from "./account-set.dto.js";
+import { SubjectsService } from "../subjects/subjects.service.js";
 
 export type AccountSet = Selectable<AccountSetsTable>;
 
 @Injectable()
 export class AccountSetsService {
-  constructor(private readonly database: DatabaseService) {}
+  constructor(
+    private readonly database: DatabaseService,
+    private readonly subjects: SubjectsService,
+  ) {}
 
   async list(): Promise<AccountSet[]> {
     return this.database
@@ -33,17 +37,27 @@ export class AccountSetsService {
 
   async create(input: CreateAccountSet): Promise<AccountSet> {
     const db = this.database.requireDatabase();
-    const result = await db
-      .insertInto("account_sets")
-      .values({
-        company_name: input.companyName,
-        base_currency: input.baseCurrency,
-        accounting_standard: input.accountingStandard,
-        enabled_from: input.enabledFrom,
-        current_period: input.currentPeriod,
-      })
-      .executeTakeFirstOrThrow();
+    const accountSetId = await db.transaction().execute(async (trx) => {
+      const result = await trx
+        .insertInto("account_sets")
+        .values({
+          company_name: input.companyName,
+          base_currency: input.baseCurrency,
+          accounting_standard: input.accountingStandard,
+          enabled_from: input.enabledFrom,
+          current_period: input.currentPeriod,
+        })
+        .executeTakeFirstOrThrow();
+      const id = Number(result.insertId);
+      const [year, month] = input.currentPeriod.split("-").map(Number);
+      await trx
+        .insertInto("accounting_periods")
+        .values({ account_set_id: id, year, month, status: "open" })
+        .execute();
+      return id;
+    });
 
-    return this.get(Number(result.insertId));
+    await this.subjects.initialize(accountSetId);
+    return this.get(accountSetId);
   }
 }

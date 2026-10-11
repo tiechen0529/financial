@@ -24,7 +24,10 @@ export interface SubjectsTable {
   name: string;
   parent_id: number | null;
   balance_direction: BalanceDirection;
+  subject_type: string;
   is_enabled: Generated<boolean>;
+  opening_debit: Generated<DecimalString>;
+  opening_credit: Generated<DecimalString>;
   created_at: Generated<Date>;
   updated_at: Generated<Date>;
 }
