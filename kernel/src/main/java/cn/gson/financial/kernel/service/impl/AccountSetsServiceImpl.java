@@ -1,6 +1,8 @@
 package cn.gson.financial.kernel.service.impl;
 
 import cn.gson.financial.kernel.aliyuncs.SmsService;
+import cn.gson.financial.kernel.common.NumericCodeGenerator;
+import cn.gson.financial.kernel.common.PasswordHasher;
 import cn.gson.financial.kernel.common.Roles;
 import cn.gson.financial.kernel.exception.ServiceException;
 import cn.gson.financial.kernel.model.entity.Currency;
@@ -19,9 +21,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -128,8 +128,8 @@ public class AccountSetsServiceImpl extends ServiceImpl<AccountSetsMapper, Accou
         user.setNickname(Roles.valueOf(role).display);
         user.setRealName(Roles.valueOf(role).display + mobile.substring(7));
         user.setAccountSetsId(accountSetsId);
-        user.setInitPassword(RandomStringUtils.randomNumeric(6));
-        user.setPassword(DigestUtils.sha256Hex(user.getInitPassword()));
+        String initialPassword = NumericCodeGenerator.generate(6);
+        user.setPassword(PasswordHasher.hash(initialPassword));
         this.userMapper.insert(user);
 
         UserAccountSets userAccountSets = new UserAccountSets();
@@ -141,7 +141,7 @@ public class AccountSetsServiceImpl extends ServiceImpl<AccountSetsMapper, Accou
         try {
             SmsService.SmsBody smsBody = new SmsService.SmsBody(mobile, smsSignature, registerCode);
             Map<String, String> params = new HashMap<>(1);
-            params.put("password", user.getInitPassword());
+            params.put("password", initialPassword);
             smsBody.setTemplateParam(params);
             this.smsService.send(smsBody);
         } catch (Exception e) {

@@ -2,6 +2,8 @@ package cn.gson.financial.controller;
 
 import cn.gson.financial.annotation.IgnoresLogin;
 import cn.gson.financial.kernel.aliyuncs.SmsService;
+import cn.gson.financial.kernel.common.NumericCodeGenerator;
+import cn.gson.financial.kernel.common.PasswordHasher;
 import cn.gson.financial.kernel.controller.JsonResult;
 import cn.gson.financial.kernel.model.entity.User;
 import cn.gson.financial.kernel.model.vo.UserVo;
@@ -10,8 +12,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -106,8 +106,7 @@ public class AppController {
     @IgnoresLogin
     @GetMapping("/sendMsg/{mobile}")
     public JsonResult sendMsg(@PathVariable String mobile, HttpSession session) {
-        String numeric = RandomStringUtils.randomNumeric(4);
-        log.info("验证码：" + numeric);
+        String numeric = NumericCodeGenerator.generate(4);
         this.sendSmsCode(mobile, numeric);
         session.setAttribute(mobile, numeric);
         return JsonResult.successful();
@@ -128,8 +127,7 @@ public class AppController {
         if (this.userService.count(qw) > 0) {
             return JsonResult.failure("此手机号已被注册，请直接用这个手机号登录或者更换手机号注册！");
         }
-        String numeric = RandomStringUtils.randomNumeric(4);
-        log.info("验证码：" + numeric);
+        String numeric = NumericCodeGenerator.generate(4);
         this.sendSmsCode(mobile, numeric);
         session.setAttribute(mobile, numeric);
         return JsonResult.successful();
@@ -157,13 +155,13 @@ public class AppController {
         User user = new User();
         user.setMobile(mobile);
         user.setRealName(mobile);
-        user.setInitPassword(RandomStringUtils.randomNumeric(6));
-        user.setPassword(DigestUtils.sha256Hex(user.getInitPassword()));
+        String initialPassword = NumericCodeGenerator.generate(6);
+        user.setPassword(PasswordHasher.hash(initialPassword));
         this.userService.save(user);
 
         session.setAttribute("user", this.userService.getUserVo(user.getId()));
         try {
-            this.sendPasswordSms(user.getMobile(), user.getInitPassword());
+            this.sendPasswordSms(user.getMobile(), initialPassword);
         } catch (Exception e) {
             log.error("密码短信发送失败！", e);
         }
@@ -214,7 +212,7 @@ public class AppController {
             qw.eq(User::getMobile, mobile);
             User user = userService.getOne(qw);
             if (user != null) {
-                user.setPassword(DigestUtils.sha256Hex(newPassword));
+                user.setPassword(PasswordHasher.hash(newPassword));
                 user.setInitPassword("");
                 userService.updateById(user);
 
@@ -237,12 +235,12 @@ public class AppController {
     public JsonResult updatePwd(String original, String newPassword, @SessionAttribute(value = "user", required = false) UserVo user, HttpSession session) {
         //核对旧密码
         User u = userService.getById(user.getId());
-        if (!DigestUtils.sha256Hex(original).equals(u.getPassword())) {
+        if (!PasswordHasher.matches(original, u.getPassword())) {
             return JsonResult.failure("原密码错误!");
         }
 
         //更新新密码
-        user.setPassword(DigestUtils.sha256Hex(newPassword));
+        user.setPassword(PasswordHasher.hash(newPassword));
         user.setInitPassword("");
         userService.updateById(user);
         return JsonResult.successful();
@@ -287,8 +285,6 @@ public class AppController {
     }
 
     private void sendSmsCode(@PathVariable String mobile, String numeric) {
-        log.info("smsSignature:{}", smsSignature);
-        log.info("verificationCode:{}", verificationCode);
         SmsBody smsBody = new SmsBody(mobile, smsSignature, verificationCode);
         Map<String, String> params = new HashMap<>(1);
         params.put("code", numeric);

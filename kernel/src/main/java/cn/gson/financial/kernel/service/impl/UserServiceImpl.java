@@ -1,5 +1,6 @@
 package cn.gson.financial.kernel.service.impl;
 
+import cn.gson.financial.kernel.common.PasswordHasher;
 import cn.gson.financial.kernel.exception.ServiceException;
 import cn.gson.financial.kernel.model.entity.User;
 import cn.gson.financial.kernel.model.entity.UserAccountSets;
@@ -15,7 +16,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,10 +48,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public UserVo login(@NonNull String mobile, @NonNull String password) {
         LambdaQueryWrapper<User> query = Wrappers.lambdaQuery();
         query.eq(User::getMobile, mobile);
-        query.eq(User::getPassword, DigestUtils.sha256Hex(password));
         User user = this.getOne(query);
-        if (user == null) {
+        if (user == null || !PasswordHasher.matches(password, user.getPassword())) {
             throw new ServiceException("账号或密码错误！");
+        }
+        boolean needsSave = false;
+        if (PasswordHasher.needsUpgrade(user.getPassword())) {
+            user.setPassword(PasswordHasher.hash(password));
+            needsSave = true;
+        }
+        if (user.getInitPassword() != null && !user.getInitPassword().isEmpty()) {
+            user.setInitPassword("");
+            needsSave = true;
+        }
+        if (needsSave) {
+            this.updateById(user);
         }
         //获取角色信息
         return getUserVo(user);

@@ -1,5 +1,6 @@
 package cn.gson.financial.kernel.model.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
@@ -33,6 +34,7 @@ public class User implements Serializable {
      * 密码
      */
     @TableField(value = "password")
+    @JSONField(serialize = false, deserialize = false)
     private String password;
 
     /**
@@ -75,6 +77,7 @@ public class User implements Serializable {
      * 默认密码
      */
     @TableField(value = "init_password")
+    @JSONField(serialize = false, deserialize = false)
     private String initPassword;
 
     /**

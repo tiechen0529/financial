@@ -17,5 +17,5 @@ dependencies {
     implementation("com.aliyun.oss:aliyun-sdk-oss:3.4.0")
     implementation("com.belerweb:pinyin4j:2.5.1")
     compile 'com.baomidou:mybatis-plus-boot-starter:3.1.2'
-    compile('com.alibaba:fastjson:1.2.51')
+    compile('com.alibaba:fastjson:1.2.83')
 }

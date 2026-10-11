@@ -41,8 +41,6 @@ public class SmsServiceImpl implements SmsService {
 
     public SmsServiceImpl(@Value("${aliyun.accessKeyId}") String accessKeyId,
                           @Value("${aliyun.accessKeySecret}") String accessKeySecret) {
-        log.info("accessKeyId:{}", accessKeyId);
-        log.info("accessKeySecret:{}", accessKeySecret);
         //初始化ascClient,暂时不支持多region（请勿修改）
         IClientProfile profile = DefaultProfile.getProfile(regionId, accessKeyId, accessKeySecret);
         try {
