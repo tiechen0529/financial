@@ -161,15 +161,16 @@ public abstract class BaseCrudController<T extends IService, E> extends BaseCont
     protected final JsonResult getPageList(Map<String, String> params, IService s) {
         QueryWrapper qw = new QueryWrapper<>();
         this.setQwAccountSetsId(qw);
+        Map<String, String> filters = QueryFilterUtils.safeEqualFilters(params);
         JsonResult jsonResult;
         if (params.containsKey("page")) {
             Page<Map<String, String>> pageable = new Page<>(Integer.parseInt(params.get("page")), Integer.parseInt(params.getOrDefault("size", "20")));
             params.remove("page");
             params.remove("size");
-            qw.allEq(params);
+            qw.allEq(filters);
             jsonResult = JsonResult.successful(s.page(pageable, qw));
         } else {
-            qw.allEq(params);
+            qw.allEq(filters);
             jsonResult = JsonResult.successful(s.list(qw));
         }
         return jsonResult;

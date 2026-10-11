@@ -1,6 +1,7 @@
 package cn.gson.financial.controller;
 
 import cn.gson.financial.base.BaseCrudController;
+import cn.gson.financial.base.QueryFilterUtils;
 import cn.gson.financial.kernel.controller.JsonResult;
 import cn.gson.financial.kernel.model.entity.AccountSets;
 import cn.gson.financial.kernel.model.entity.UserAccountSets;
@@ -57,9 +58,7 @@ public class AccountSetsController extends BaseCrudController<AccountSetsService
             QueryWrapper<AccountSets> asQw = Wrappers.query();
             IntStream intStream = list.stream().mapToInt(UserAccountSets::getAccountSetsId);
             asQw.in("id", intStream.boxed().collect(Collectors.toList()));
-            asQw.allEq(params);
-            this.getPageList(params, userAccountSetsService);
-
+            asQw.allEq(QueryFilterUtils.safeEqualFilters(params));
             return JsonResult.successful(this.service.list(asQw));
         }
         return JsonResult.successful();

@@ -1,6 +1,7 @@
 package cn.gson.financial.controller;
 
 import cn.gson.financial.base.BaseCrudController;
+import cn.gson.financial.base.QueryFilterUtils;
 import cn.gson.financial.common.SubjectExcelUtils;
 import cn.gson.financial.kernel.controller.JsonResult;
 import cn.gson.financial.kernel.exception.ServiceException;
@@ -46,7 +47,7 @@ public class SubjectController extends BaseCrudController<SubjectService, Subjec
     public JsonResult list(@RequestParam Map<String, String> params) {
         QueryWrapper qw = new QueryWrapper<>();
         this.setQwAccountSetsId(qw);
-        qw.allEq(params);
+        qw.allEq(QueryFilterUtils.safeEqualFilters(params));
         return JsonResult.successful(service.listVo(qw));
     }
 
