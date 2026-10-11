@@ -41,6 +41,10 @@ https://f.fenxi365.com/
 4、版权说明
 
 可以免费使用，不可用于商业销售
+
+#### 本地开发
+环境准备、数据库导入和启动方式见 [DEVELOPMENT.md](DEVELOPMENT.md)。
+
 #### 商业版演示地址
 https://f3.fenxi365.com/
 
